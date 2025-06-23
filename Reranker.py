@@ -14,7 +14,7 @@ if not st.secrets:
 
     load_dotenv()
 
-cohere_key = st.secrets.get("cohere_key ") or os.getenv("cohere_key ")
+cohere_key = st.secrets.get("cohere_api_key ") or os.getenv("cohere_api_key ")
 
 
 def Reranker(state: SubState) -> SubState:
