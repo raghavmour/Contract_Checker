@@ -5,7 +5,18 @@ from graph import app
 from pypdf import PdfReader
 
 
-load_dotenv()  # Load variables from .env
+import streamlit as st
+
+if st.secrets:
+    os.environ["LANGSMITH_TRACING"] = st.secrets["LANGSMITH_TRACING"]
+    os.environ["LANGSMITH_ENDPOINT"] = st.secrets["LANGSMITH_ENDPOINT"]
+    os.environ["LANGSMITH_API_KEY"] = st.secrets["LANGSMITH_API_KEY"]
+    os.environ["LANGSMITH_PROJECT"] = st.secrets["LANGSMITH_PROJECT"]
+else:
+    # Local environment (fallback to dotenv or system env)
+    from dotenv import load_dotenv
+
+    load_dotenv()  # Load variables from .env
 
 st.title("Contract Clause Compliance Checker")
 

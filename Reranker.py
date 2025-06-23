@@ -4,7 +4,17 @@ from state import SubState
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+import streamlit as st
+
+# Accessing secrets
+
+
+if not st.secrets:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+cohere_key = st.secrets.get("cohere_key ") or os.getenv("cohere_key ")
 
 
 def Reranker(state: SubState) -> SubState:
@@ -13,7 +23,7 @@ def Reranker(state: SubState) -> SubState:
 
     # 1. Initialize reranker
     reranker = CohereRerank(
-        model="rerank-english-v3.0",
+        model=cohere_key,
         cohere_api_key=os.getenv("cohere_api_key"),
     )
 

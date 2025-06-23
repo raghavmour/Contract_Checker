@@ -12,7 +12,12 @@ from Reranker import Reranker
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # Load variables from .env
+import streamlit as st
+
+if not st.secrets:
+    from dotenv import load_dotenv
+
+    load_dotenv()
 graph_sub = StateGraph(SubState)
 
 graph_sub.add_node("query_generator", generate_relevant_docs_node)

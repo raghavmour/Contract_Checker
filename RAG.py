@@ -8,12 +8,25 @@ from langchain.retrievers.ensemble import EnsembleRetriever
 
 import pickle
 
+import streamlit as st
+
+# Accessing secrets
+
+
+if not st.secrets:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+cohere_key = st.secrets.get("cohere_key ") or os.getenv("cohere_key ")
+
 vectordb_path = "faiss_cohere_index_procurement_policy"
 splits_path = "splits.pkl_procurement_policy"
 
+
 # Initialize Cohere embeddings
 embedding = CohereEmbeddings(
-    model="embed-english-v3.0",
+    model=cohere_key,
     cohere_api_key="RMw0qz2wJg9Us1lE7ly6bpzZQTX1hufFDyyVXRYm",
     user_agent="langchain",
 )

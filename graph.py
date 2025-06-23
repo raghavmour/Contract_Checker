@@ -6,7 +6,12 @@ from langgraph.graph import StateGraph, END, START
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # Load variables from .env
+import streamlit as st
+
+if not st.secrets:
+    from dotenv import load_dotenv
+
+    load_dotenv()  # Load variables from .env
 graph = StateGraph(AgentState)
 
 graph.add_node("extract_clauses", extract_clauses)
