@@ -18,7 +18,7 @@ if not st.secrets:
 
     load_dotenv()
 
-cohere_key = st.secrets.get("cohere_api_key ") or os.getenv("cohere_api_key ")
+COHERE_API_KEY = st.secrets.get("COHERE_API_KEY ") or os.getenv("COHERE_API_KEY ")
 
 vectordb_path = "faiss_cohere_index_procurement_policy"
 splits_path = "splits.pkl_procurement_policy"
@@ -27,7 +27,7 @@ splits_path = "splits.pkl_procurement_policy"
 # Initialize Cohere embeddings
 embedding = CohereEmbeddings(
     model="embed-english-v3.0",
-    cohere_api_key=cohere_key,
+    cohere_api_key=COHERE_API_KEY,
     user_agent="langchain",
 )
 # Check if FAISS vector store and splits exist, else build them

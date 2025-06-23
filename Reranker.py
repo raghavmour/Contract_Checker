@@ -14,7 +14,7 @@ if not st.secrets:
 
     load_dotenv()
 
-cohere_key = st.secrets.get("cohere_api_key ") or os.getenv("cohere_api_key ")
+COHERE_API_KEY = st.secrets.get("COHERE_API_KEY") or os.getenv("COHERE_API_KEY")
 
 
 def Reranker(state: SubState) -> SubState:
@@ -24,7 +24,7 @@ def Reranker(state: SubState) -> SubState:
     # 1. Initialize reranker
     reranker = CohereRerank(
         model="rerank-english-v3.0",
-        cohere_api_key=cohere_key,
+        cohere_api_key=COHERE_API_KEY,
     )
 
     # 2. Your query
