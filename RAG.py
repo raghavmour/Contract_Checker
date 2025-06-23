@@ -26,8 +26,8 @@ splits_path = "splits.pkl_procurement_policy"
 
 # Initialize Cohere embeddings
 embedding = CohereEmbeddings(
-    model=cohere_key,
-    cohere_api_key="RMw0qz2wJg9Us1lE7ly6bpzZQTX1hufFDyyVXRYm",
+    model="embed-english-v3.0",
+    cohere_api_key=cohere_key,
     user_agent="langchain",
 )
 # Check if FAISS vector store and splits exist, else build them

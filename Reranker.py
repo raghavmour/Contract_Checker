@@ -23,8 +23,8 @@ def Reranker(state: SubState) -> SubState:
 
     # 1. Initialize reranker
     reranker = CohereRerank(
-        model=cohere_key,
-        cohere_api_key=os.getenv("cohere_api_key"),
+        model="rerank-english-v3.0",
+        cohere_api_key=cohere_key,
     )
 
     # 2. Your query
