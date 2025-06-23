@@ -1,8 +1,13 @@
+# Ignore Streamlit secrets
+.streamlit/secrets.toml
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
+test.py
+check_retrivers.py
 # Virtual environments
 venv/
 env/
