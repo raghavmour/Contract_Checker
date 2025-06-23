@@ -16,6 +16,18 @@ def Compiliance_checker(state: SubState) -> SubState:
     state["retrived_docs"] = state["retrived_docs"]
     docs = combine_docs_with_sources(state["relevant_docs"])
     text = state["clause"]["text"]
+    if not docs.strip():
+        return {
+            "answer": [
+                {
+                    "clause_text": text,
+                    "policy_source": "none",
+                    "reason": "No internal policy guidelines provided to evaluate the clause against, so it is considered compliant by default.",
+                    "compliant": True,
+                    "suggested_revision": None,
+                }
+            ]
+        }
     prompt = f"""
   You are a contract compliance assistant.
 
