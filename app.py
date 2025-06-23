@@ -2,7 +2,8 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 from graph import app
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
+
 
 load_dotenv()  # Load variables from .env
 
