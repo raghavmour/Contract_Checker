@@ -49,10 +49,12 @@ Internal Policy:
 - Mark a clause as **non-compliant only if it contradicts, violates, or weakens** internal policy requirements.
 - Missing details are acceptable unless their absence introduces a conflict or allows non-compliance.
 
+if the internal policy does not provide enough information to evaluate the clause, then it is considered compliant by default. and the sorce is none
+
 Respond strictly in JSON format following the structure of this schema:
 
 - clause_text: The original clause being reviewed
-- policy_source: The name of the internal policy document used (e.g., "procurement_policy.pdf")
+- policy_source: The name of the internal policy document used
 - reason: A short explanation of whether the clause is compliant
 - compliant: true or false
 - suggested_revision: If not compliant, suggest a revision (or null if compliant)

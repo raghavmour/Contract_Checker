@@ -40,7 +40,7 @@ if uploaded_file:
         # Call your compliance-checking app
         response = app.invoke(state)
         data = response["answer"]
-
+        print(data)  # Debugging: print the data structure
         # Display results in a table
         st.subheader("Clause Compliance Results")
         st.table(

@@ -5,7 +5,8 @@ from state import SubState
 
 def generate_relevant_docs_node(state: SubState) -> SubState:
     clause_text = state["clause"]["text"] or None
-    clause_type = state["clause"]["clause_type"] or "general"
+    # clause_type = state["clause"]["clause_type"] or "general"
+    clause_type = state.get("clause", {}).get("clause_type") or "general"
 
     # Step 1: Generate a search query using LLM
     prompt = f"""

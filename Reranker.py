@@ -41,3 +41,53 @@ def Reranker(state: SubState) -> SubState:
     ]
 
     return {"relevant_docs": relevant_docs}
+
+
+# from typing import List
+# from langchain.schema import Document
+# from sentence_transformers import CrossEncoder
+
+# import streamlit as st
+# from state import SubState
+
+
+# # Cache model to avoid reloading on each rerun
+# @st.cache_resource
+# def load_cross_encoder():
+#     return CrossEncoder("mixedbread-ai/mxbai-rerank-xsmall-v1")
+
+
+# model = load_cross_encoder()
+
+
+# def rerank_with_cross_encoder(
+#     query: str, docs: List[Document], top_k: int = 5, threshold: float = 0.4
+# ) -> List[Document]:
+#     # Get raw text from documents
+#     doc_texts = [doc.page_content for doc in docs]
+
+#     # Use CrossEncoder to rank documents
+#     results = model.rank(query, doc_texts, return_documents=True, top_k=top_k)
+
+#     # Filter and convert to langchain Documents
+#     reranked_docs = [
+#         Document(page_content=res["text"], metadata={"score": float(res["score"])})
+#         for res in results
+#         if res["score"] > threshold
+#     ]
+
+#     return reranked_docs
+
+
+# def Reranker(state: SubState) -> SubState:
+#     state["relevant_docs"] = []
+#     state["answer"] = []
+
+#     query = state["query"]
+#     docs = state["retrived_docs"]
+
+#     # Apply reranker
+#     relevant_docs = rerank_with_cross_encoder(query, docs, top_k=10, threshold=0.5)
+#     state["relevant_docs"] = relevant_docs
+
+#     return state
