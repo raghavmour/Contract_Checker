@@ -6,6 +6,9 @@ from langchain.schema import Document
 
 
 class ClauseComplianceResult(BaseModel):
+    clause_title: str = Field(
+        ..., description="The title of the clause being evaluated."
+    )
     clause_text: str = Field(
         ..., description="The original clause text being evaluated."
     )
@@ -14,7 +17,7 @@ class ClauseComplianceResult(BaseModel):
         description="The source or identifier of the internal policy used for comparison.",
     )
     reason: str = Field(
-        ..., description="Explanation of the compliance decision. Keep this short."
+        ..., description="Explanation of the compliance decision. keep this short"
     )
     compliant: bool = Field(
         ..., description="Whether the clause is compliant with internal policy."

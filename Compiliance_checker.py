@@ -29,9 +29,11 @@ def Compiliance_checker(state: SubState) -> SubState:
             ]
         }
     prompt = f"""
-  You are a contract compliance assistant.
+You are a contract compliance assistant.
 
-Your task is to evaluate whether a clause from a contract complies with internal policy guidelines.
+Your task is to evaluate whether a clause from a contract complies with Nexify Solutions' internal policy guidelines. Nexify Solutions is receiving services from vendors, and the clause is proposed by the vendor.
+
+🔺 The clause is proposed by the vendor, and Nexify is the recipient of services. You must evaluate the clause strictly from Nexify Solutions' perspective.
 
 Clause:
 ---
@@ -43,13 +45,24 @@ Internal Policy:
 {docs}
 ---
 
-**Evaluation Guidelines**:
-- If the clause is **stricter** than the policy, it is acceptable and should be marked as compliant.
-- The clause does **not need to repeat all internal processes** unless contractually required.
-- Mark a clause as **non-compliant only if it contradicts, violates, or weakens** internal policy requirements.
-- Missing details are acceptable unless their absence introduces a conflict or allows non-compliance.
+Evaluation Rules:
 
-if the internal policy does not provide enough information to evaluate the clause, then it is considered compliant by default. and the sorce is none
+If the clause adheres to the internal policy, mark it as compliant.
+
+if the clause does match but lacks other key points , still mark it as compliant, but give the improvemnt suggested_revison 
+
+If the clause does not match the internal policy exactly, evaluate whether it:
+
+ -Harms Nexify Solutions (e.g., imposes unfavorable terms, increases costs, or reduces rights). If it harms the company, mark it as non-compliant.
+
+ -Benefits Nexify Solutions (e.g., provides better terms, improves cash flow, or grants additional rights). If it benefits the company, mark it as compliant — even if it deviates from the policy.
+
+
+If the internal policy does not provide enough information to evaluate the clause, mark it as compliant by default and set the policy_source to "none".
+
+
+If the clause is non-compliant, suggest a revision to make it compliant or more favorable to Nexify Solutions.
+
 
 Respond strictly in JSON format following the structure of this schema:
 
@@ -58,8 +71,8 @@ Respond strictly in JSON format following the structure of this schema:
 - reason: A short explanation of whether the clause is compliant
 - compliant: true or false
 - suggested_revision: If not compliant, suggest a revision (or null if compliant)
-
 """
+
     compliance_result = compliance_model.invoke(prompt).model_dump()
 
     return {"answer": [compliance_result]}

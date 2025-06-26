@@ -1,4 +1,6 @@
 import streamlit as st
+
+st.set_page_config(layout="wide")
 from dotenv import load_dotenv
 import os
 from graph import app
@@ -46,6 +48,7 @@ if input_method == "Upload PDF":
             st.subheader("Clause Compliance Results")
             st.table(
                 {
+                    "Clause Title": [d["clause_title"] for d in data],
                     "Extracted Clause (from Contract)": [
                         d["clause_text"] for d in data
                     ],
@@ -97,6 +100,7 @@ else:
             st.subheader("Clause Compliance Results")
             st.table(
                 {
+                    "Clause Title": [d["clause_title"] for d in data],
                     "Extracted Clause (from Input)": [d["clause_text"] for d in data],
                     "Retrieved From": [d["policy_source"] for d in data],
                     "Compliance Logic": [d["reason"] for d in data],
