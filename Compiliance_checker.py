@@ -58,7 +58,7 @@ If the clause does not match the internal policy exactly, evaluate whether it:
  -Benefits Nexify Solutions (e.g., provides better terms, improves cash flow, or grants additional rights). If it benefits the company, mark it as compliant — even if it deviates from the policy.
 
 
-If the internal policy does not provide enough information to evaluate the clause, mark it as compliant by default and set the policy_source to "none".
+If the internal policy does not provide enough information to evaluate the clause, mark it as compliant by default and set the policy_source to "NONE".
 
 
 If the clause is non-compliant, suggest a revision to make it compliant or more favorable to Nexify Solutions.
@@ -68,9 +68,9 @@ Respond strictly in JSON format following the structure of this schema:
 
 - clause_text: The original clause being reviewed
 - policy_source: The name of the internal policy document used
-- reason: A short explanation of whether the clause is compliant
+- reason: A short explanation of whether the clause is compliant , keep this short and to the point
 - compliant: true or false
-- suggested_revision: If not compliant, suggest a revision (or null if compliant)
+- suggested_revision: If not compliant, suggest a revision (or null if compliant) , keep this short and to the point
 """
 
     compliance_result = compliance_model.invoke(prompt).model_dump()

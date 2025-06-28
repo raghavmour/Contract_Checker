@@ -33,8 +33,43 @@ class Clause(BaseModel):
     metadata: Optional[dict] = Field(default=None, description="Optional metadata ")
 
 
+# class ExtractedClauses(BaseModel):
+#     clauses: List[Clause]
+
+
 class ExtractedClauses(BaseModel):
-    clauses: List[Clause]
+    indemnification: Optional[List[Clause]] = Field(
+        default=None,
+        description="Requires one party to compensate the other for losses or damages arising from certain events, such as breach of contract, negligence, or third-party claims.",
+    )
+    warranties_and_representations: Optional[List[Clause]] = Field(
+        default=None,
+        description="Describes the vendor’s guarantees regarding the quality of goods or services, compliance with laws, and any other promises made during the negotiation of the agreement.",
+    )
+    dispute_resolution: Optional[List[Clause]] = Field(
+        default=None,
+        description="Outlines the process for resolving disputes, including whether arbitration, mediation, or litigation will be used, and the location where disputes will be resolved.",
+    )
+    governing_law_and_jurisdiction: Optional[List[Clause]] = Field(
+        default=None,
+        description="Defines the legal jurisdiction and law that will govern the agreement in case of legal disputes.",
+    )
+    subcontracting_and_assignment: Optional[List[Clause]] = Field(
+        default=None,
+        description="Defines whether the vendor can delegate its responsibilities to others or assign the agreement to another party.",
+    )
+    intellectual_property: Optional[List[Clause]] = Field(
+        default=None,
+        description="Specifies the ownership and use of intellectual property rights, including rights to any creations or inventions resulting from the agreement.",
+    )
+    limitation_of_liability: Optional[List[Clause]] = Field(
+        default=None,
+        description="Sets a cap on the amount of damages one party can claim from the other, often limiting liability to the amount paid under the contract.",
+    )
+    insurance: Optional[List[Clause]] = Field(
+        default=None,
+        description="Specifies the type of insurance the vendor is required to maintain during the term of the contract (e.g., general liability, professional indemnity).",
+    )
 
 
 class AgentState(TypedDict):

@@ -16,11 +16,7 @@ For each clause:
 - Avoid generic sections, repetitions, and administrative content unless legally relevant.
 - Omit headers or section titles unless they contain substantive text.
 
-Return the result as a JSON list of clauses, each with:
-- `clause_type`: a short name of the clause type
-- `text`: one clear, focused clause
-- `metadata`: key-value pairs if applicable
-
+ 
 
 
 Contract:
@@ -33,6 +29,8 @@ Contract:
 
     output = {k: v for k, v in extracted.model_dump().items() if v is not None}
 
-    state["extracted_clauses"] = output
+    flattened_clauses = [clause for clauses in output.values() for clause in clauses]
+
+    state["extracted_clauses"] = flattened_clauses
 
     return state
