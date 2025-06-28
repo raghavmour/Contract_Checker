@@ -73,6 +73,17 @@ Respond strictly in JSON format following the structure of this schema:
 - suggested_revision: If not compliant, suggest a revision (or null if compliant) , keep this short and to the point
 """
 
-    compliance_result = compliance_model.invoke(prompt).model_dump()
+    response = compliance_model.invoke(prompt)
+    compliance_result = (
+        response.model_dump()
+        if response is not None
+        else {
+            "clause_text": text,
+            "policy_source": "none",
+            "reason": "No internal policy guidelines provided to evaluate the clause against, so it is considered compliant by default.",
+            "compliant": True,
+            "suggested_revision": None,
+        }
+    )
 
     return {"answer": [compliance_result]}

@@ -45,29 +45,54 @@ if input_method == "Upload PDF":
             data = response["answer"]
 
             # Display results in a table
+
+            st.subheader("Clauses Extracted from Contract")
+            st.write("Number of extracted clauses:", len(response["extracted_clauses"]))
+            for idx, clause in enumerate(response["extracted_clauses"], 1):
+                st.markdown(f"### {idx}. {clause['clause_type']}")
+                st.markdown(f"> ***{clause['text']}***")
+                st.markdown("---")
+            # st.table(
+            #     {
+            #         "Clause Title": [d["clause_title"] for d in data],
+            #         "Extracted Clause (from Contract)": [
+            #             d["clause_text"] for d in data
+            #         ],
+            #         "Retrieved From": [d["policy_source"] for d in data],
+            #         "Compliance Logic": [d["reason"] for d in data],
+            #         "Status": [
+            #             "✅ Compliant" if d["compliant"] else "❌ Non-compliant"
+            #             for d in data
+            #         ],
+            #         "Suggested Revision": [
+            #             (
+            #                 d["suggested_revision"]
+            #                 if not d["compliant"] and d["suggested_revision"]
+            #                 else "N/A"
+            #             )
+            #             for d in data
+            #         ],
+            #     }
+            # )
+            if len(response["extracted_clauses"]) > 5:
+                st.warning(
+                    "As clauses are more than 5, We will randomly select 5 clauses for compliance check."
+                )
             st.subheader("Clause Compliance Results")
-            st.table(
-                {
-                    "Clause Title": [d["clause_title"] for d in data],
-                    "Extracted Clause (from Contract)": [
-                        d["clause_text"] for d in data
-                    ],
-                    "Retrieved From": [d["policy_source"] for d in data],
-                    "Compliance Logic": [d["reason"] for d in data],
-                    "Status": [
-                        "✅ Compliant" if d["compliant"] else "❌ Non-compliant"
-                        for d in data
-                    ],
-                    "Suggested Revision": [
-                        (
-                            d["suggested_revision"]
-                            if not d["compliant"] and d["suggested_revision"]
-                            else "N/A"
-                        )
-                        for d in data
-                    ],
-                }
-            )
+            for idx, clause in enumerate(data, 1):
+                compliant_icon = "✅" if clause["compliant"] else "❌"
+                st.markdown(f"### {idx}. {compliant_icon} {clause['clause_title']}")
+                st.markdown(f"**Policy Source:** {clause['policy_source']}")
+                st.markdown(f"> ***{clause['clause_text']}***")
+
+                st.markdown(f"**Reason:** {clause['reason']}")
+
+                if not clause["compliant"] and clause.get("suggested_revision"):
+                    st.markdown(
+                        f"**Suggested Revision:** _{clause['suggested_revision']}_"
+                    )
+
+                st.markdown("---")
 
 else:
     # Manual input for clause text and type
