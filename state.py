@@ -17,20 +17,22 @@ class ClauseComplianceResult(BaseModel):
         description="The source or identifier of the internal policy used for comparison.",
     )
     reason: str = Field(
-        ..., description="Explanation of the compliance decision. keep this short"
+        ...,
+        description="Explanation of the compliance decision. keep this short and to the point",
     )
     compliant: bool = Field(
         ..., description="Whether the clause is compliant with internal policy."
     )
     suggested_revision: Optional[str] = Field(
-        None, description="Suggested revision if the clause is not compliant."
+        None,
+        description="Suggested revision if the clause is not compliant. keep this short and to the point",
     )
 
 
 class Clause(BaseModel):
     text: Optional[str] = Field(default=None, description="The raw clause text")
     clause_type: Optional[str] = Field(default=None, description="The type of clause")
-    metadata: Optional[dict] = Field(default=None, description="Optional metadata ")
+    # metadata: Optional[dict] = Field(default=None, description="Optional metadata ")
 
 
 # class ExtractedClauses(BaseModel):
