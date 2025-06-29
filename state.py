@@ -6,9 +6,9 @@ from langchain.schema import Document
 
 
 class ClauseComplianceResult(BaseModel):
-    clause_title: str = Field(
-        ..., description="The title of the clause being evaluated."
-    )
+    # clause_title: str = Field(
+    #     ..., description="The title of the clause being evaluated."
+    # )
     clause_text: str = Field(
         ..., description="The original clause text being evaluated."
     )

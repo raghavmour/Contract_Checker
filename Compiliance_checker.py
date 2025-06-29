@@ -58,7 +58,7 @@ If the clause does not match the internal policy exactly, evaluate whether it:
  -Benefits Nexify Solutions (e.g., provides better terms, improves cash flow, or grants additional rights). If it benefits the company, mark it as compliant — even if it deviates from the policy.
 
 
-If the internal policy does not provide enough information to evaluate the clause, mark it as compliant by default and set the policy_source to "NONE".
+If the internal policy does not provide enough information to evaluate the clause, mark it as compliant by default and set the policy_source to "NO INTERNAL POLICY FOUND".
 
 
 If the clause is non-compliant, suggest a revision to make it compliant or more favorable to Nexify Solutions.
@@ -85,5 +85,7 @@ Respond strictly in JSON format following the structure of this schema:
             "suggested_revision": None,
         }
     )
-
+    compliance_result["clause_title"] = state["clause"][
+        "clause_type"
+    ]  # Ensure clause_text is included
     return {"answer": [compliance_result]}
