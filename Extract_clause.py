@@ -5,18 +5,27 @@ from model import extract_clause_llm
 def extract_clauses(state: AgentState) -> AgentState:
     contract_text = state["contract"]
     prompt = f"""
-Extract all legally relevant clauses from the contract text below.
+Extract the following contract clauses from the input:
+
+- Indemnification  
+- Warranties and Representations  
+- Dispute Resolution  
+- Governing Law and Jurisdiction  
+- Subcontracting and Assignment  
+- Intellectual Property  
+- Limitation of Liability  
+- Insurance  
 
 For each clause:
 - Identify and assign a `clause_type` based on its content (e.g., "Indemnification", "Warranties and Representations", "Dispute Resolution", etc.).
-- Provide the clause `text`, limited to **one logical unit of meaning per item**. If a clause includes multiple conditions, obligations, or concepts, **split them into separate sub-clauses**.
-- Keep each `text` short and self-contained (preferably 1-3 lines).
+- Provide the clause `text`, limited to **one logical unit of meaning per item**.
 - Do not merge unrelated ideas into the same clause, even if they appear in the same paragraph.
 - Avoid generic sections, repetitions, and administrative content unless legally relevant.
 - Omit headers or section titles unless they contain substantive text.
 
-
-
+Return the result as a JSON list of clauses, each with:
+- `clause_type`: a short name of the clause type (use one of the types listed above)
+- `text`: one clear, focused clause  
 Contract:
 \"\"\"
 {contract_text}
@@ -27,8 +36,29 @@ Contract:
 
     output = {k: v for k, v in extracted.model_dump().items() if v is not None}
 
-    flattened_clauses = [clause for clauses in output.values() for clause in clauses]
+    # flattened_clauses = [clause for clauses in output.values() for clause in clauses]
 
+    print(output)
     return {
-        "extracted_clauses": flattened_clauses,
+        "extracted_clauses": output["clauses"],
     }
+
+
+# For each clause:
+# - Identify and assign a `clause_type` based on its content (e.g., "Indemnification", "Warranties and Representations", "Dispute Resolution", etc.).
+# - Provide the clause `text`, limited to **one logical unit of meaning per item**. If a clause includes multiple conditions, obligations, or concepts, **split them into separate sub-clauses**.
+# - Keep each `text` short and self-contained (preferably 1-3 lines).
+# - Do not merge unrelated ideas into the same clause, even if they appear in the same paragraph.
+# - Avoid generic sections, repetitions, and administrative content unless legally relevant.
+# - Omit headers or section titles unless they contain substantive text.
+
+
+# Extract all legally relevant clauses from the contract text below, strictly adhering to the following clause types as defined in the ExtractedClauses model: indemnification, warranties_and_representations, dispute_resolution, governing_law_and_jurisdiction, subcontracting_and_assignment, intellectual_property, limitation_of_liability, and insurance.
+
+# For each clause:
+# - Identify and assign a `clause_type` based on its content (e.g., "Indemnification", "Warranties and Representations", "Dispute Resolution", etc.).
+# - Do not merge unrelated ideas into the same clause.
+# - Avoid generic sections, repetitions, and administrative content unless legally relevant.
+# - Omit headers or section titles unless they contain substantive text.
+# - For any clause type where no relevant clause is found, return an empty list.
+# - Return a single ExtractedClauses object containing all extracted clauses, formatted as per the ExtractedClauses model.

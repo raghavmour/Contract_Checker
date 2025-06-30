@@ -28,6 +28,15 @@ llm = ChatGroq(
     # model="mistral-saba-24b",
     temperature=0,
 )
+# llm_m = ChatGroq(
+#     api_key=groq_key,
+#     # model="llama-3.1-8b-instant"
+#     # model="llama-3.3-70b-versatile",
+#     model="meta-llama/llama-4-maverick-17b-128e-instruct",
+#     # model="deepseek-r1-distill-llama-70b",
+#     # model="mistral-saba-24b",
+#     temperature=0,
+# )
 
 model = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
