@@ -29,6 +29,6 @@ Contract:
 
     flattened_clauses = [clause for clauses in output.values() for clause in clauses]
 
-    state["extracted_clauses"] = flattened_clauses
-
-    return state
+    return {
+        "extracted_clauses": flattened_clauses,
+    }

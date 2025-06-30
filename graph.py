@@ -5,8 +5,9 @@ from clause_sender import ReRanker_Sender
 from langgraph.graph import StateGraph, END, START
 from dotenv import load_dotenv
 import os
-
+from extract_clause_sender import extract_clause_sender
 import streamlit as st
+from clause_sender_node import clause_sender_node
 
 if not st.secrets:
     from dotenv import load_dotenv
@@ -15,14 +16,22 @@ if not st.secrets:
 graph = StateGraph(AgentState)
 
 graph.add_node("extract_clauses", extract_clauses)
-
+graph.add_node("clause_sender_node", clause_sender_node)
 graph.add_node("SubGraph", sub_graph)
 
 graph.add_conditional_edges(
-    "extract_clauses", ReRanker_Sender, {"SubGraph": "SubGraph"}
+    "clause_sender_node", ReRanker_Sender, {"SubGraph": "SubGraph"}
 )
 
-graph.add_edge(START, "extract_clauses")
+graph.add_conditional_edges(
+    START,
+    extract_clause_sender,
+    {
+        "extract_clauses": "extract_clauses",
+    },
+)
+
+graph.add_edge("extract_clauses", "clause_sender_node")
 graph.add_edge("SubGraph", END)
 
 app = graph.compile()

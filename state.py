@@ -75,8 +75,8 @@ class ExtractedClauses(BaseModel):
 
 
 class AgentState(TypedDict):
-    contract: str
-    extracted_clauses: List[Clause]
+    contract: Annotated[List[str], add]
+    extracted_clauses: Annotated[List[Clause], add]
     answer: Annotated[List[ClauseComplianceResult], add]
 
 

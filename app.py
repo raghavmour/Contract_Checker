@@ -1,11 +1,13 @@
 import streamlit as st
 
 st.set_page_config(layout="wide")
+
 from dotenv import load_dotenv
 import os
 from graph import app
-from pypdf import PdfReader
 from subgraph import sub_graph
+from pypdf import PdfReader
+from Extract_clause import extract_clauses  # This is your clause extraction logic
 
 # Load environment variables
 if st.secrets:
@@ -14,132 +16,175 @@ if st.secrets:
     os.environ["LANGSMITH_API_KEY"] = st.secrets["LANGSMITH_API_KEY"]
     os.environ["LANGSMITH_PROJECT"] = st.secrets["LANGSMITH_PROJECT"]
 else:
-    # Local environment (fallback to dotenv or system env)
-    load_dotenv()  # Load variables from .env
+    load_dotenv()
 
-st.title("Contract Clause Compliance Checker")
+st.title("📄 Contract Clause Intelligence Suite")
 
-# Option to choose input method
-input_method = st.radio("Choose input method:", ("Upload PDF", "Manual Clause Input"))
+tab1, tab2 = st.tabs(["📌 Clause Compliance Checker", "📑 Clause Extractor"])
 
-if input_method == "Upload PDF":
-    # Upload PDF
-    uploaded_file = st.file_uploader("Upload a contract PDF", type="pdf")
+# --- Tab 1: Clause Compliance Checker ---
+with tab1:
+    input_method = st.radio(
+        "Choose input method:", ("Upload PDF", "Manual Clause Input")
+    )
 
-    if uploaded_file:
-        # Read PDF content using PyPDF
-        reader = PdfReader(uploaded_file)
-        contract_text = ""
-        for page in reader.pages:
-            contract_text += page.extract_text() or ""
+    if input_method == "Upload PDF":
+        uploaded_file = st.file_uploader("Upload a contract PDF", type="pdf")
 
-        # Check if any text was extracted
-        if not contract_text.strip():
-            st.error("Could not extract text from the uploaded PDF.")
-        else:
-            # Create state dictionary
-            state = {"contract": contract_text}
+        if uploaded_file:
+            reader = PdfReader(uploaded_file)
+            total_pages = len(reader.pages)
 
-            # Call your compliance-checking app
-            response = app.invoke(state)
-            data = response["answer"]
+            # Split pages into 4-page chunks
+            chunks = [
+                (i, min(i + 3, total_pages - 1)) for i in range(0, total_pages, 4)
+            ]
 
-            # Display results in a table
+            contract_text_chunks = []  # List to hold contract text from each chunk
 
-            st.subheader("Clauses Extracted from Contract")
-            st.write("Number of extracted clauses:", len(response["extracted_clauses"]))
-            for idx, clause in enumerate(response["extracted_clauses"], 1):
-                st.markdown(f"### {idx}. {clause['clause_type']}")
-                st.markdown(f"> ***{clause['text']}***")
-                st.markdown("---")
-            # st.table(
-            #     {
-            #         "Clause Title": [d["clause_title"] for d in data],
-            #         "Extracted Clause (from Contract)": [
-            #             d["clause_text"] for d in data
-            #         ],
-            #         "Retrieved From": [d["policy_source"] for d in data],
-            #         "Compliance Logic": [d["reason"] for d in data],
-            #         "Status": [
-            #             "✅ Compliant" if d["compliant"] else "❌ Non-compliant"
-            #             for d in data
-            #         ],
-            #         "Suggested Revision": [
-            #             (
-            #                 d["suggested_revision"]
-            #                 if not d["compliant"] and d["suggested_revision"]
-            #                 else "N/A"
-            #             )
-            #             for d in data
-            #         ],
-            #     }
-            # )
-            if len(response["extracted_clauses"]) > 5:
-                st.warning(
-                    "As clauses are more than 5, We will randomly select 5 clauses for compliance check."
+            for start, end in chunks:
+                chunk_text = ""
+                for i in range(start, end + 1):
+                    text = reader.pages[i].extract_text()
+                    if text:
+                        chunk_text += text
+                contract_text_chunks.append(chunk_text)
+
+            # Optional: combine all chunked texts if you still want to send as one document
+            full_contract_text = "\n\n".join(contract_text_chunks)
+
+            if not full_contract_text.strip():
+                st.error("Could not extract text from the uploaded PDF.")
+            else:
+                # Create state dictionary
+                state = {"contract": contract_text_chunks}
+
+                # Call your compliance-checking app
+                response = app.invoke(state)
+                data = response["answer"]
+
+                st.subheader("Clauses Extracted from Contract")
+                st.write(
+                    "Number of extracted clauses:", len(response["extracted_clauses"])
                 )
-            st.subheader("Clause Compliance Results")
-            for idx, clause in enumerate(data, 1):
-                compliant_icon = "✅" if clause["compliant"] else "❌"
-                st.markdown(f"### {idx}. {compliant_icon} {clause['clause_title']}")
-                st.markdown(f"**Policy Source:** {clause['policy_source']}")
-                st.markdown(f"> ***{clause['clause_text']}***")
 
-                st.markdown(f"**Reason:** {clause['reason']}")
+                for idx, clause in enumerate(response["extracted_clauses"], 1):
+                    st.markdown(f"### {idx}. {clause['clause_type']}")
+                    st.markdown(f"> ***{clause['text']}***")
+                    st.markdown("---")
 
-                if not clause["compliant"] and clause.get("suggested_revision"):
-                    st.markdown(
-                        f"**Suggested Revision:** _{clause['suggested_revision']}_"
+                if len(response["extracted_clauses"]) > 5:
+                    st.warning(
+                        "As clauses are more than 5, We will randomly select 5 clauses for compliance check."
                     )
 
-                st.markdown("---")
+                st.subheader("Clause Compliance Results")
+                for idx, clause in enumerate(data, 1):
+                    compliant_icon = "✅" if clause["compliant"] else "❌"
+                    st.markdown(f"### {idx}. {compliant_icon} {clause['clause_title']}")
+                    st.markdown(f"**Policy Source:** {clause['policy_source']}")
+                    st.markdown(f"> ***{clause['clause_text']}***")
+                    st.markdown(f"**Reason:** {clause['reason']}")
 
-else:
-    # Manual input for clause text and type
-    clause_text = st.text_area(
-        "Enter Clause Text", placeholder="Paste the clause text here..."
-    )
-    clause_type = st.text_input(
-        "Enter Clause Type",
-        placeholder="e.g., Payment Terms, Termination, Confidentiality",
-    )
-
-    if st.button("Check Compliance"):
-        if not clause_text or not clause_type:
-            st.error("Please provide both clause text and clause type.")
-        else:
-            # Create state dictionary for manual input
-            state = {
-                "clause": {
-                    "text": clause_text,
-                    "clause_type": clause_type,
-                    "metadata": {},  # Optional metadata can be added here
-                }
-            }
-
-            # Call your compliance-checking app
-            response = sub_graph.invoke(state)
-            data = response["answer"]
-
-            # Display results in a table
-            st.subheader("Clause Compliance Results")
-            st.table(
-                {
-                    "Clause Title": [d["clause_title"] for d in data],
-                    "Extracted Clause (from Input)": [d["clause_text"] for d in data],
-                    "Retrieved From": [d["policy_source"] for d in data],
-                    "Compliance Logic": [d["reason"] for d in data],
-                    "Status": [
-                        "✅ Compliant" if d["compliant"] else "❌ Non-compliant"
-                        for d in data
-                    ],
-                    "Suggested Revision": [
-                        (
-                            d["suggested_revision"]
-                            if not d["compliant"] and d["suggested_revision"]
-                            else "N/A"
+                    if not clause["compliant"] and clause.get("suggested_revision"):
+                        st.markdown(
+                            f"**Suggested Revision:** _{clause['suggested_revision']}_"
                         )
-                        for d in data
-                    ],
+
+                    st.markdown("---")
+    else:
+        clause_text = st.text_area(
+            "Enter Clause Text", placeholder="Paste the clause text here..."
+        )
+        clause_type = st.text_input(
+            "Enter Clause Type",
+            placeholder="e.g., Payment Terms, Termination, Confidentiality",
+        )
+
+        if st.button("Check Compliance"):
+            if not clause_text or not clause_type:
+                st.error("Please provide both clause text and clause type.")
+            else:
+                state = {
+                    "clause": {
+                        "text": clause_text,
+                        "clause_type": clause_type,
+                        "metadata": {},
+                    }
                 }
-            )
+                response = sub_graph.invoke(state)
+                data = response["answer"]
+
+                st.subheader("Clause Compliance Results")
+                st.table(
+                    {
+                        "Clause Title": [d["clause_title"] for d in data],
+                        "Extracted Clause (from Input)": [
+                            d["clause_text"] for d in data
+                        ],
+                        "Retrieved From": [d["policy_source"] for d in data],
+                        "Compliance Logic": [d["reason"] for d in data],
+                        "Status": [
+                            "✅ Compliant" if d["compliant"] else "❌ Non-compliant"
+                            for d in data
+                        ],
+                        "Suggested Revision": [
+                            (
+                                d["suggested_revision"]
+                                if not d["compliant"] and d["suggested_revision"]
+                                else "N/A"
+                            )
+                            for d in data
+                        ],
+                    }
+                )
+
+# --- Tab 2: Clause Extractor Only ---
+with tab2:
+    st.subheader("Upload Contract PDF to Extract Clauses")
+
+    uploaded_file = st.file_uploader(
+        "Upload PDF (Clause Extraction Only)", type="pdf", key="extractor"
+    )
+
+    if uploaded_file:
+        try:
+            reader = PdfReader(uploaded_file)
+            total_pages = len(reader.pages)
+            chunks = [
+                (i, min(i + 3, total_pages - 1)) for i in range(0, total_pages, 4)
+            ]
+            all_extracted_clauses = []
+
+            for start_page, end_page in chunks:
+                chunk_text = ""
+                for i in range(start_page, end_page + 1):
+                    text = reader.pages[i].extract_text()
+                    if text:
+                        chunk_text += text
+
+                if chunk_text.strip():
+                    state = {"contract": chunk_text}
+                    response = extract_clauses(state)
+                    extracted = response.get("extracted_clauses", [])
+
+                    for clause in extracted:
+                        clause["page_range"] = f"{start_page + 1}-{end_page + 1}"
+                        all_extracted_clauses.append(clause)
+
+            if not all_extracted_clauses:
+                st.warning("⚠️ No clauses were extracted from the document.")
+            else:
+                st.success(
+                    f"✅ {len(all_extracted_clauses)} clauses extracted from {len(chunks)} chunk(s)."
+                )
+
+                for idx, clause in enumerate(all_extracted_clauses, 1):
+                    st.markdown(
+                        f"### {idx}. {clause.get('clause_type', 'Unknown')} (Pages: {clause['page_range']})"
+                    )
+                    st.markdown(f"> ***{clause.get('text', 'No text found.')}***")
+                    st.markdown("---")
+
+        except Exception as e:
+            st.error(f"🚨 Error while processing the file: {e}")
