@@ -37,8 +37,9 @@ Contract:
     output = {k: v for k, v in extracted.model_dump().items() if v is not None}
 
     # flattened_clauses = [clause for clauses in output.values() for clause in clauses]
-
-    print(output)
+    output["clauses"] = [
+        clause for clause in output["clauses"] if clause.get("text", "").strip()
+    ]
     return {
         "extracted_clauses": output["clauses"],
     }
