@@ -47,6 +47,7 @@ def Reranker(state: SubState) -> SubState:
         relevant_docs.extend(
             [docs[i] for i in top_indices if docs[i] not in relevant_docs]
         )
+    relevant_docs = relevant_docs[:2]
 
     return {"relevant_docs": relevant_docs}
 
