@@ -58,7 +58,6 @@ compliance_model = model.with_structured_output(ClauseComplianceResult)
 
 # 🔺 The clause is proposed by the vendor, and Nexify is the recipient of services. You must evaluate the clause **strictly from Nexify Solutions' perspective**.
 
-
 # Clause:
 # ---
 # Nexify must pay within 30 days of invoice

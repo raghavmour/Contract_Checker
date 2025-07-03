@@ -23,11 +23,19 @@ Clause Text:
 
 Return only the search query as a single-line string, with no additional explanation or formatting. The query should use key legal and domain-specific terms from the clause and be specific enough to match relevant internal policies.
 """
-    response = query_generator_llm.invoke(prompt)
-    query = response.model_dump()
-    state["query"] = query["query"]
-    state["retrived_docs"] = []
-    state["relevant_docs"] = []
-    state["answer"] = []
-    # Step 3: Return results to graph
-    return state
+
+    for attempt in range(3):
+        try:
+            response = query_generator_llm.invoke(prompt)
+            query = response.model_dump()
+            state["query"] = query["query"]
+            state["retrived_docs"] = []
+            state["relevant_docs"] = []
+            state["answer"] = []
+            return state
+        except Exception as e:
+            print(f"[Retry {attempt + 1}/{3}] Error generating query: {e}")
+            if attempt == 3 - 1:
+                raise RuntimeError(
+                    "Failed to generate query after multiple retries."
+                ) from e

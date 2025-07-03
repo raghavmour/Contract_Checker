@@ -32,17 +32,24 @@ Contract:
 \"\"\"
 """
 
-    extracted = extract_clause_llm.invoke(prompt)
-
-    output = {k: v for k, v in extracted.model_dump().items() if v is not None}
-
-    # flattened_clauses = [clause for clauses in output.values() for clause in clauses]
-    output["clauses"] = [
-        clause for clause in output["clauses"] if clause.get("text", "").strip()
-    ]
-    return {
-        "extracted_clauses": output["clauses"],
-    }
+    for attempt in range(3):
+        try:
+            extracted = extract_clause_llm.invoke(prompt)
+            output = {k: v for k, v in extracted.model_dump().items() if v is not None}
+            output["clauses"] = [
+                clause
+                for clause in output.get("clauses", [])
+                if clause.get("text", "").strip()
+            ]
+            return {
+                "extracted_clauses": output["clauses"],
+            }
+        except Exception as e:
+            print(f"[Retry {attempt + 1}/{3}] Error: {e}")
+            if attempt == 3 - 1:
+                raise RuntimeError(
+                    "Failed to extract clauses after multiple retries."
+                ) from e
 
 
 # For each clause:
