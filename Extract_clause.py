@@ -32,7 +32,7 @@ Contract:
 \"\"\"
 """
 
-    for attempt in range(3):
+    for attempt in range(5):
         try:
             extracted = extract_clause_llm.invoke(prompt)
             output = {k: v for k, v in extracted.model_dump().items() if v is not None}
@@ -45,8 +45,8 @@ Contract:
                 "extracted_clauses": output["clauses"],
             }
         except Exception as e:
-            print(f"[Retry {attempt + 1}/{3}] Error: {e}")
-            if attempt == 3 - 1:
+            print(f"[Retry {attempt + 1}/{5}] Error: {e}")
+            if attempt == 5 - 1:
                 raise RuntimeError(
                     "Failed to extract clauses after multiple retries."
                 ) from e

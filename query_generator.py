@@ -21,7 +21,7 @@ Clause Text:
 {clause_text}
 \"\"\"
 
-Return only the search query as a single-line string, with no additional explanation or formatting. The query should use key legal and domain-specific terms from the clause and be specific enough to match relevant internal policies.
+Return only the search query as a single-line string, with no additional explanation or formatting
 """
 
     for attempt in range(3):

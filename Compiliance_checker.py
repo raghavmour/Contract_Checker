@@ -70,7 +70,7 @@ Respond strictly in JSON format following the structure of this schema:
 - policy_source: The name of the internal policy document used
 - reason: A short explanation of whether the clause is compliant , keep this short and to the point
 - compliant: true or false
-- suggested_revision: If not compliant, suggest a revision (or null if compliant) , keep this short and to the point
+- give a list of clauses from the internal policies, each with its source formatted as: 'clause text — `source`' which was used to make the decision of complianncy.
 """
 
     response = compliance_model.invoke(prompt)
@@ -89,3 +89,6 @@ Respond strictly in JSON format following the structure of this schema:
         "clause_type"
     ]  # Ensure clause_text is included
     return {"answer": [compliance_result]}
+
+
+# - suggested_revision: If not compliant, suggest a revision (or null if compliant) , keep this short and to the point

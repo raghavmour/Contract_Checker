@@ -43,9 +43,14 @@ model = ChatGoogleGenerativeAI(
     google_api_key=google_api_key,  # Replace with your API key
     temperature=0.7,
 )
+llm_q = ChatGoogleGenerativeAI(
+    model="gemini-2.0-flash",
+    google_api_key=google_api_key,  # Replace with your API key
+    temperature=0.7,
+)
 extract_clause_llm = llm.with_structured_output(ExtractedClauses)
 
-query_generator_llm = llm.with_structured_output(query)
+query_generator_llm = llm_q.with_structured_output(query)
 
 compliance_model = model.with_structured_output(ClauseComplianceResult)
 
