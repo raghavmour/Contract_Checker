@@ -20,11 +20,12 @@ def Compiliance_checker(state: SubState) -> SubState:
         return {
             "answer": [
                 {
+                    "clause_title": state["clause"]["clause_type"],
                     "clause_text": text,
                     "policy_source": "none",
                     "reason": "No internal policy guidelines provided to evaluate the clause against, so it is considered compliant by default.",
                     "compliant": True,
-                    "suggested_revision": None,
+                    "clauses_internal": [],
                 }
             ]
         }
@@ -82,7 +83,7 @@ Respond strictly in JSON format following the structure of this schema:
             "policy_source": "none",
             "reason": "No internal policy guidelines provided to evaluate the clause against, so it is considered compliant by default.",
             "compliant": True,
-            "suggested_revision": None,
+            "clauses_internal": [],
         }
     )
     compliance_result["clause_title"] = state["clause"][

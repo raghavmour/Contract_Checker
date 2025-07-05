@@ -36,19 +36,24 @@ def Reranker(state: SubState) -> SubState:
     # 4. Rerank using invoke()
     reranked_docs = reranker.rerank(query=query, documents=docs)
 
-    relevant_docs = [
-        docs[item["index"]] for item in reranked_docs if item["relevance_score"] > 0.5
-    ]
-    if len(relevant_docs) < 2 and len(reranked_docs) > 0:
-        # Since reranked_docs is sorted by relevance, take top documents
-        num_needed = 2 - len(relevant_docs)
-        top_indices = [item["index"] for item in reranked_docs[:num_needed]]
-        # Add top documents, avoiding duplicates
-        relevant_docs.extend(
-            [docs[i] for i in top_indices if docs[i] not in relevant_docs]
-        )
-    relevant_docs = relevant_docs[:2]
-
+    # relevant_docs = [
+    #     docs[item["index"]] for item in reranked_docs if item["relevance_score"] > 0.5
+    # ]
+    # if len(relevant_docs) < 2 and len(reranked_docs) > 0:
+    #     # Since reranked_docs is sorted by relevance, take top documents
+    #     num_needed = 2 - len(relevant_docs)
+    #     top_indices = [item["index"] for item in reranked_docs[:num_needed]]
+    #     # Add top documents, avoiding duplicates
+    #     relevant_docs.extend(
+    #         [docs[i] for i in top_indices if docs[i] not in relevant_docs]
+    #     )
+    # relevant_docs = relevant_docs[:2]
+    if reranked_docs and reranked_docs[0]["relevance_score"] >= 0.1:
+        # Take top 2 documents
+        top_indices = [item["index"] for item in reranked_docs[:2]]
+        relevant_docs = [docs[i] for i in top_indices]
+    else:
+        relevant_docs = []
     return {"relevant_docs": relevant_docs}
 
 
