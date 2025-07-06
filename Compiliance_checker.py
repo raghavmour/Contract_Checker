@@ -1,6 +1,9 @@
 from state import SubState
 from langchain.schema import Document
-from model import compliance_model
+from state import ClauseComplianceResult
+from model import client
+from google.genai import types
+import json
 
 
 def combine_docs_with_sources(documents: list[Document]) -> str:
@@ -74,18 +77,36 @@ Respond strictly in JSON format following the structure of this schema:
 - give a list of clauses from the internal policies, each with its source formatted as: 'clause text — `source`' which was used to make the decision of complianncy.
 """
 
-    response = compliance_model.invoke(prompt)
-    compliance_result = (
-        response.model_dump()
-        if response is not None
-        else {
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+            thinking_config=types.ThinkingConfig(thinking_budget=1024),
+            response_schema=ClauseComplianceResult,
+        ),
+    )
+    # compliance_result = (
+    #     json_obj = json.loads(response.text)
+    #     if response is not None
+    #     else {
+    #         "clause_text": text,
+    #         "policy_source": "none",
+    #         "reason": "No internal policy guidelines provided to evaluate the clause against, so it is considered compliant by default.",
+    #         "compliant": True,
+    #         "clauses_internal": [],
+    #     }
+    # )
+    if response is None or not response.text:
+        compliance_result = {
             "clause_text": text,
             "policy_source": "none",
             "reason": "No internal policy guidelines provided to evaluate the clause against, so it is considered compliant by default.",
             "compliant": True,
             "clauses_internal": [],
         }
-    )
+    else:
+        compliance_result = json.loads(response.text)
     compliance_result["clause_title"] = state["clause"][
         "clause_type"
     ]  # Ensure clause_text is included

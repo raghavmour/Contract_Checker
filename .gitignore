@@ -2,6 +2,8 @@
 .streamlit/secrets.toml
 
 test.ipynb
+test1.ipynb
+contract.pdf
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

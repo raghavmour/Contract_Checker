@@ -28,8 +28,8 @@ def Reranker(state: SubState) -> SubState:
     )
 
     # 2. Your query
-    query = state["query"]
-
+    # query = state["query"]
+    query = state["clause"]["text"]
     # 3. List of documents you want to rerank
     docs = state["retrived_docs"]
 
@@ -48,12 +48,11 @@ def Reranker(state: SubState) -> SubState:
     #         [docs[i] for i in top_indices if docs[i] not in relevant_docs]
     #     )
     # relevant_docs = relevant_docs[:2]
-    if reranked_docs and reranked_docs[0]["relevance_score"] >= 0.1:
-        # Take top 2 documents
-        top_indices = [item["index"] for item in reranked_docs[:2]]
-        relevant_docs = [docs[i] for i in top_indices]
-    else:
-        relevant_docs = []
+
+    # Take top 2 documents
+    top_indices = [item["index"] for item in reranked_docs[:2]]
+    relevant_docs = [docs[i] for i in top_indices]
+
     return {"relevant_docs": relevant_docs}
 
 

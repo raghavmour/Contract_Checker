@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
+from google import genai
+from google.genai import types
 
 # from langchain_core.prompts import ChatPromptTemplate
 
@@ -19,15 +21,22 @@ if not st.secrets:
 
 groq_key = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
 google_api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
-llm = ChatGroq(
-    api_key=groq_key,
-    # model="llama-3.1-8b-instant"
-    # model="llama-3.3-70b-versatile",
-    model="meta-llama/llama-4-scout-17b-16e-instruct",
-    # model="deepseek-r1-distill-llama-70b",
-    # model="mistral-saba-24b",
-    temperature=0,
+# llm = ChatGroq(
+#     api_key=groq_key,
+#     # model="llama-3.1-8b-instant"
+#     # model="llama-3.3-70b-versatile",
+#     model="meta-llama/llama-4-scout-17b-16e-instruct",
+#     # model="deepseek-r1-distill-llama-70b",
+#     # model="mistral-saba-24b",
+#     temperature=0,
+# )
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash-lite-preview-06-17",
+    google_api_key=google_api_key,  # Replace with your API key
+    temperature=0.0,
 )
+client = genai.Client(api_key=google_api_key)
+
 # llm_m = ChatGroq(
 #     api_key=groq_key,
 #     # model="llama-3.1-8b-instant"
