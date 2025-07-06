@@ -10,4 +10,4 @@ faiss-cpu
 rank_bm25
 streamlit
 langchain_google_genai
-google-generativeai
+google-genai

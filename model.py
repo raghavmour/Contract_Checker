@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
-from google.generativeai import genai
+from google import genai
 from google.genai import types
 
 # from langchain_core.prompts import ChatPromptTemplate
