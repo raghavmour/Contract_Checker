@@ -11,4 +11,4 @@ rank_bm25
 streamlit
 langchain_google_genai
 google-genai
-cohere
+cohere>=5.12.0,<5.16
