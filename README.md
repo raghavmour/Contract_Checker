@@ -45,7 +45,7 @@ Follow these instructions to set up and run the project locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/raghavmour/Contract_Checker.git](https://github.com/raghavmour/Contract_Checker.git)
+git clone https://github.com/raghavmour/Contract_Checker.git
 cd Contract_Checker
 ```
 
@@ -145,3 +145,4 @@ This tab provides a simpler utility if you only need to extract clauses.
 
 1.  Upload a contract PDF.
 2.  The application will process the document and display all the clauses it finds, along with the page range where each clause was located.
+
