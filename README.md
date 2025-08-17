@@ -73,24 +73,31 @@ pip install -r requirements.txt
 
 ### 4. Set Up Environment Variables
 
-Create a file named `.env` in the root directory of the project. Copy the content below into the file and **replace the placeholder values with your own API keys**.
+This application is designed to use Streamlit's secrets management.
 
-**`.env` file**:
+**For Local Development:**
+1. Create a directory named `.streamlit` in the root of your project.
+2. Inside the `.streamlit` directory, create a file named `secrets.toml`.
+3. Copy the content below into the file and **replace the placeholder values with your own API keys**.
 
-```
+**`.streamlit/secrets.toml`**:
+```toml
 # LangSmith Configuration (Optional but Recommended)
-LANGSMITH_TRACING="true"
-LANGSMITH_ENDPOINT="[https://api.smith.langchain.com](https://api.smith.langchain.com)"
-LANGSMITH_API_KEY="your_langsmith_api_key_here"
-LANGSMITH_PROJECT="your_project_name_here"
+LANGSMITH_TRACING = "true"
+LANGSMITH_ENDPOINT = "[https://api.smith.langchain.com](https://api.smith.langchain.com)"
+LANGSMITH_API_KEY = "your_langsmith_api_key_here"
+LANGSMITH_PROJECT = "your_project_name_here"
 
-# LLM Provider API Keys (Provide keys for the services you intend to use)
-GROQ_API_KEY="your_groq_api_key_here"
-COHERE_API_KEY="your_cohere_api_key_here"
-GOOGLE_API_KEY="your_google_api_key_here"
+# LLM Provider API Keys
+GROQ_API_KEY = "your_groq_api_key_here"
+COHERE_API_KEY = "your_cohere_api_key_here"
+GOOGLE_API_KEY = "your_google_api_key_here"
 ```
 
-**Security Note**: Never commit your `.env` file to version control. Ensure that `.env` is listed in your `.gitignore` file.
+**For Streamlit Cloud Deployment:**
+When you deploy your app, you will add these same secrets in your app's settings on the Streamlit Community Cloud dashboard. The app code is already set up to read them from there.
+
+**Security Note**: Never commit your `secrets.toml` file to version control. Ensure that `.streamlit/secrets.toml` is listed in your `.gitignore` file.
 
 ### 5. Run the Application
 
