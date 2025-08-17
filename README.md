@@ -1,48 +1,22 @@
-# 📄 Contract Clause Intelligence Suite
-
-A Streamlit-powered web application that leverages Large Language Models (LLMs) to analyze legal contracts. This tool can automatically extract clauses from a contract and check them for compliance against a set of user-provided policy documents.
-
-
-
----
-
-## ✨ Features
-
-* **Dynamic Knowledge Base**: Upload your internal policy documents, legal guidelines, or standard contract templates to create a customized knowledge base.
-* **Automated Clause Extraction**: Upload a contract in PDF format, and the application will automatically identify and extract all its constituent clauses.
-* **Comprehensive Compliance Checking**: The application compares extracted clauses against your knowledge base to determine compliance.
-    * **✅ Compliant**: The clause aligns with your internal policies.
-    * **❌ Non-Compliant**: The clause deviates from your policies.
-* **Detailed Feedback**: For each clause, the tool provides:
-    * A clear compliance status.
-    * The reasoning behind the decision, citing the relevant policy clauses.
-    * A suggested revision for non-compliant clauses to bring them into alignment.
-* **Dual Input Modes**: Check an entire contract by uploading a PDF or perform a quick check on a single, manually pasted clause.
-* **Efficient Document Handling**: Long documents are automatically chunked and processed to fit within model context windows and ensure thorough analysis.
-
----
-
-## ⚙️ How It Works / Architecture
-
-This application is built on a modern stack for AI-powered document analysis, primarily using a **Retrieval-Augmented Generation (RAG)** architecture.
-
-1.  **Frontend**: The user interface is built with **Streamlit**, providing an interactive and easy-to-use experience for file uploads and results visualization.
-2.  **Document Processing**: When you upload your initial "policy" documents, the `retriever.py` module processes them. It splits the documents into smaller chunks, generates embeddings (numerical representations), and stores them in a vector database. This creates a searchable knowledge base (the "Retriever").
-3.  **Core Logic (AI Graph)**: The main analysis is orchestrated by **LangGraph**, a framework for building stateful, multi-step AI agents.
-    * **Clause Extraction**: When a new contract is uploaded, an LLM call is made via `Extract_clause.py` to identify and parse individual clauses from the raw text.
-    * **Compliance Analysis**: For each extracted clause, the system retrieves the most relevant clauses from your policy knowledge base, compares them, and generates a final judgment on compliance, a reason, and a suggested revision if necessary.
-4.  **Backend Services**:
-    * **LLMs**: The application relies on powerful Large Language Models from providers like **Groq**, **Cohere**, and **Google**.
-    * **LangSmith**: The application is configured to use LangSmith for tracing and debugging the complex LLM chains and graphs, ensuring reliability and transparency.
-
----
-
-## 🚀 Getting Started
-
-Follow these instructions to set up and run the project locally.
-
-### 1. Clone the Repository
-
-```bash
-git clone [https://github.com/raghavmour/Contract_Checker.git](https://github.com/raghavmour/Contract_Checker.git)
+📄 Contract Clause Intelligence SuiteA Streamlit-powered web application that leverages Large Language Models (LLMs) to analyze legal contracts. This tool can automatically extract clauses from a contract and check them for compliance against a set of user-provided policy documents.<!-- Add a GIF or screenshot of the application in action here --><!-- Example:  -->✨ FeaturesDynamic Knowledge Base: Upload your internal policy documents, legal guidelines, or standard contract templates to create a customized knowledge base.Automated Clause Extraction: Upload a contract in PDF format, and the application will automatically identify and extract all its constituent clauses.Comprehensive Compliance Checking: The application compares extracted clauses against your knowledge base to determine compliance.✅ Compliant: The clause aligns with your internal policies.❌ Non-Compliant: The clause deviates from your policies.Detailed Feedback: For each clause, the tool provides:A clear compliance status.The reasoning behind the decision, citing the relevant policy clauses.A suggested revision for non-compliant clauses to bring them into alignment.Dual Input Modes: Check an entire contract by uploading a PDF or perform a quick check on a single, manually pasted clause.Efficient Document Handling: Long documents are automatically chunked and processed to fit within model context windows and ensure thorough analysis.⚙️ How It Works / ArchitectureThis application is built on a modern stack for AI-powered document analysis, primarily using a Retrieval-Augmented Generation (RAG) architecture.Frontend: The user interface is built with Streamlit, providing an interactive and easy-to-use experience for file uploads and results visualization.Document Processing: When you upload your initial "policy" documents, the retriever.py module processes them. It splits the documents into smaller chunks, generates embeddings (numerical representations), and stores them in a vector database. This creates a searchable knowledge base (the "Retriever").Core Logic (AI Graph): The main analysis is orchestrated by LangGraph, a framework for building stateful, multi-step AI agents.Clause Extraction: When a new contract is uploaded, an LLM call is made via Extract_clause.py to identify and parse individual clauses from the raw text.Compliance Analysis: For each extracted clause, the system retrieves the most relevant clauses from your policy knowledge base, compares them, and generates a final judgment on compliance, a reason, and a suggested revision if necessary.Backend Services:LLMs: The application relies on powerful Large Language Models from providers like Groq, Cohere, and Google.LangSmith: The application is configured to use LangSmith for tracing and debugging the complex LLM chains and graphs, ensuring reliability and transparency.🚀 Getting StartedFollow these instructions to set up and run the project locally.1. Clone the Repositorygit clone [https://github.com/raghavmour/Contract_Checker.git](https://github.com/raghavmour/Contract_Checker.git)
 cd Contract_Checker
+2. Create a Virtual EnvironmentIt's highly recommended to use a virtual environment to manage dependencies.# For macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+
+# For Windows
+python -m venv venv
+.\venv\Scripts\activate
+3. Install DependenciesThe repository includes a requirements.txt file with all necessary libraries. Install them using pip:pip install -r requirements.txt
+4. Set Up Environment VariablesCreate a file named .env in the root directory of the project. Copy the content below into the file and replace the placeholder values with your own API keys..env file:# LangSmith Configuration (Optional but Recommended)
+LANGSMITH_TRACING="true"
+LANGSMITH_ENDPOINT="[https://api.smith.langchain.com](https://api.smith.langchain.com)"
+LANGSMITH_API_KEY="your_langsmith_api_key_here"
+LANGSMITH_PROJECT="your_project_name_here"
+
+# LLM Provider API Keys (Provide keys for the services you intend to use)
+GROQ_API_KEY="your_groq_api_key_here"
+COHERE_API_KEY="your_cohere_api_key_here"
+GOOGLE_API_KEY="your_google_api_key_here"
+Security Note: Never commit your .env file to version control. Ensure that .env is listed in your .gitignore file.5. Run the ApplicationOnce the setup is complete, run the Streamlit app with the following command:streamlit run app.py
+The application should now be running and accessible in your web browser!📖 Usage GuideThe application operates in a simple, two-stage process.Stage 1: Upload Policy DocumentsWhen you first launch the app, you will see the "Document Processing App" page.Click the "Choose PDF files" button to upload one or more PDF files that constitute your knowledge base (e.g., internal compliance guidelines, standard legal playbooks).Once the files are selected, click the "Submit Documents" button. The system will process these files and create the retrievers.Stage 2: Analyze ContractsAfter submitting the policy documents, you will be taken to the "Contract Clause Intelligence Suite" with two main tabs.Tab 1: Clause Compliance CheckerYou have two options here:Upload a PDF:Select the "Upload PDF" option.Upload the contract you want to analyze.The application will automatically extract clauses and display the compliance results.Manual Clause Input:Select the "Manual Clause Input" option.Paste a single clause into the "Enter Clause Text" area and provide its type.Click "Check Compliance" to get an instant analysis.Tab 2: Clause ExtractorThis tab provides a simpler utility if you only need to extract clauses.Upload a contract PDF.The application will process the document and display all the clauses it finds, along with the page range where each clause was located.
